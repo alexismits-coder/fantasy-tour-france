@@ -232,7 +232,7 @@
           <select id="coureur3"></select>
 
           <button id="savePronoBtn" onclick="saveProno()">Enregistrer le prono</button>
-          <p class="small">Vainqueur trouvé = 8 pts. Autre podium = 3 pts. Impossible de choisir deux fois le même coureur.</p>
+          <p class="small">Vainqueur trouvé = 5 pts. Autre podium = 3 pts. Impossible de choisir deux fois le même coureur.</p>
         </section>
 
         <section class="card">
@@ -676,8 +676,8 @@
 
       picks.forEach(coureur => {
         if (coureur === resultat.Premier) {
-          total += 8;
-          details.push(`<div class="success">+8 ${escapeHtml(coureur)} vainqueur</div>`);
+          total += 5;
+          details.push(`<div class="success">+5 ${escapeHtml(coureur)} vainqueur</div>`);
         } else if (podium.includes(coureur)) {
           total += 3;
           details.push(`<div class="blue">+3 ${escapeHtml(coureur)} podium</div>`);
