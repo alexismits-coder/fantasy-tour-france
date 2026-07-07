@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fantasy Tour de France</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+margin:0;
+background:#f3f4f6;
+}
+
+header{
+background:#ffd700;
+padding:15px;
+font-size:24px;
+font-weight:bold;
+text-align:center;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:15px;
+}
+
+.card{
+background:white;
+padding:15px;
+margin-bottom:15px;
+border-radius:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin:5px 0;
+border-radius:8px;
+border:1px solid #ddd;
+box-sizing:border-box;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#1e88e5;
+color:white;
+border:none;
+border-radius:8px;
+font-weight:bold;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:10px;
+border-bottom:1px solid #ddd;
+}
+</style>
+</head>
+
+<body>
+
+<header>🚴 Fantasy Tour de France</header>
+
+<div class="container">
+
+<div class="card">
+
+<h3>Pronostic</h3>
+
+<select id="player">
+<option>Val</option>
+<option>Tits</option>
+<option>Tote</option>
+<option>Vic</option>
+<option>Mits</option>
+</select>
+
+<select id="stage"></select>
+
+<input id="p1" placeholder="Pronostic 1">
+<input id="p2" placeholder="Pronostic 2">
+<input id="p3" placeholder="Pronostic 3">
+
+<button onclick="savePrediction()">
+Enregistrer
+</button>
+
+</div>
+
+<div class="card">
+
+<h3>Résultat officiel</h3>
+
+<select id="resultStage"></select>
+
+<input id="winner" placeholder="Vainqueur">
+<input id="second" placeholder="2ème">
+<input id="third" placeholder="3ème">
+
+<button onclick="saveResult()">
+Valider résultat
+</button>
+
+</div>
+
+<div class="card">
+
+<h3>👕 Maillots</h3>
+
+<select id="jersey">
+<option>Jaune</option>
+<option>Vert</option>
+<option>A Pois</option>
+<option>Blanc</option>
+</select>
+
+<select id="jerseyWinner">
+<option>Val</option>
+<option>Tits</option>
+<option>Tote</option>
+<option>Vic</option>
+<option>Mits</option>
+</select>
+
+<button onclick="giveJersey()">
+Ajouter +3 pts
+</button>
+
+</div>
+
+<div class="card">
+
+<h3>🏆 Classement</h3>
+
+<table>
+<thead>
+<tr>
+<th>Joueur</th>
+<th>Points</th>
+</tr>
+</thead>
+<tbody id="ranking"></tbody>
+</table>
+
+</div>
+
+</div>
+
+<pp.js
+
+</body>
+</html>
