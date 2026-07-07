@@ -258,7 +258,7 @@
   </main>
 
   <script>
-    const API_URL = https://script.google.com/macros/s/AKfycbxraGIE61N_k-GDrT_kzkbxPkfwQPIXcCcX5boCHbYMbSbncwNt7pukoEt1gMm8LjZ6Gg/exec;
+    const API_URL = "https://script.google.com/macros/s/AKfycbxraGIE61N_k-GDrT_kzkbxPkfwQPIXcCcX5boCHbYMbSbncwNt7pukoEt1gMm8LjZ6Gg/exec";
 
     let state = {
       joueurs: [],
@@ -507,7 +507,7 @@
 
 loadData().catch(error => {
   document.getElementById("loader").innerHTML =
-    "Erreur de chargement : " + error.message;
+    "Erreur de chargement : " + error.message + "<br><br>Vérifie l'URL Apps Script et le déploiement en accès Tout le monde.";
   console.error(error);
 });
   </script>
