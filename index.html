@@ -505,7 +505,11 @@
         .replaceAll("'", "&#039;");
     }
 
-    loadData();
+loadData().catch(error => {
+  document.getElementById("loader").innerHTML =
+    "Erreur de chargement : " + error.message;
+  console.error(error);
+});
   </script>
 </body>
 </html>
