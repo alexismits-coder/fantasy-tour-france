@@ -1,1 +1,511 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pronos Tour de France</title>
+  <style>
+    :root {
+      --yellow: #ffd400;
+      --black: #151515;
+      --white: #ffffff;
+      --grey: #f4f4f4;
+      --green: #27ae60;
+      --red: #e74c3c;
+    }
 
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--grey);
+      color: var(--black);
+    }
+
+    header {
+      background: linear-gradient(135deg, #151515, #333);
+      color: var(--white);
+      padding: 24px 16px;
+      text-align: center;
+      border-bottom: 6px solid var(--yellow);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    header p {
+      margin: 8px 0 0;
+      opacity: 0.85;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      background: white;
+    }
+
+    button {
+      margin-top: 16px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 999px;
+      background: var(--yellow);
+      color: var(--black);
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      filter: brightness(0.95);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+
+    th {
+      background: #fafafa;
+    }
+
+    .rank {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .success {
+      color: var(--green);
+      font-weight: bold;
+    }
+
+    .danger {
+      color: var(--red);
+      font-weight: bold;
+    }
+
+    .small {
+      font-size: 13px;
+      opacity: 0.75;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .loader {
+      text-align: center;
+      padding: 20px;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 24px; }
+      table { font-size: 12px; }
+      th, td { padding: 7px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🚴 Pronos Tour de France</h1>
+    <p>Val · Tote · Vic · Mits · Mutte</p>
+  </header>
+
+  <main>
+    <div id="loader" class="loader">Chargement...</div>
+
+    <div id="app" style="display:none;">
+      <div class="grid">
+        <section class="card">
+          <h2>🎯 Prono d'étape</h2>
+
+          <label>Étape</label>
+          <select id="pronoEtape"></select>
+
+          <label>Joueur</label>
+          <select id="pronoJoueur"></select>
+
+          <label>Coureur 1</label>
+          <select id="coureur1"></select>
+
+          <label>Coureur 2</label>
+          <select id="coureur2"></select>
+
+          <label>Coureur 3</label>
+          <select id="coureur3"></select>
+
+          <button onclick="saveProno()">Enregistrer le prono</button>
+          <p class="small">Vainqueur trouvé = 8 pts. Autre podium = 3 pts.</p>
+        </section>
+
+        <section class="card">
+          <h2>🏁 Résultat d'étape</h2>
+
+          <label>Étape</label>
+          <select id="resultatEtape"></select>
+
+          <label>Vainqueur</label>
+          <select id="premier"></select>
+
+          <label>Deuxième</label>
+          <select id="deuxieme"></select>
+
+          <label>Troisième</label>
+          <select id="troisieme"></select>
+
+          <button onclick="saveResultat()">Enregistrer le résultat</button>
+        </section>
+
+        <section class="card">
+          <h2>👕 Pronos maillots</h2>
+
+          <label>Joueur</label>
+          <select id="maillotJoueur"></select>
+
+          <label>Maillot jaune</label>
+          <select id="pronoJaune"></select>
+
+          <label>Maillot vert</label>
+          <select id="pronoVert"></select>
+
+          <label>Maillot à pois</label>
+          <select id="pronoPois"></select>
+
+          <label>Maillot blanc</label>
+          <select id="pronoBlanc"></select>
+
+          <button onclick="saveMaillotProno()">Enregistrer les maillots</button>
+        </section>
+
+        <section class="card">
+          <h2>🏆 Résultats maillots finaux</h2>
+
+          <label>Maillot jaune</label>
+          <select id="resultatJaune"></select>
+
+          <label>Maillot vert</label>
+          <select id="resultatVert"></select>
+
+          <label>Maillot à pois</label>
+          <select id="resultatPois"></select>
+
+          <label>Maillot blanc</label>
+          <select id="resultatBlanc"></select>
+
+          <button onclick="saveMaillotResultat()">Enregistrer les résultats finaux</button>
+          <p class="small">+3 pts par bon maillot.</p>
+        </section>
+
+        <section class="card full">
+          <h2>🥇 Classement général</h2>
+          <div id="classement"></div>
+        </section>
+
+        <section class="card full">
+          <h2>📋 Détail des pronos</h2>
+          <div id="details"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const API_URL = https://script.google.com/macros/s/AKfycbxraGIE61N_k-GDrT_kzkbxPkfwQPIXcCcX5boCHbYMbSbncwNt7pukoEt1gMm8LjZ6Gg/exec;
+
+    let state = {
+      joueurs: [],
+      coureurs: [],
+      pronos: [],
+      resultats: [],
+      maillots: []
+    };
+
+    const etapes = Array.from({ length: 18 }, (_, i) => i + 4);
+
+    async function loadData() {
+      const res = await fetch(API_URL);
+      state = await res.json();
+      renderAll();
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("app").style.display = "block";
+    }
+
+    async function postData(payload) {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+      state = await res.json();
+      renderAll();
+      alert("Enregistré !");
+    }
+
+    function renderAll() {
+      fillSelect("pronoEtape", etapes);
+      fillSelect("resultatEtape", etapes);
+
+      fillSelect("pronoJoueur", state.joueurs);
+      fillSelect("maillotJoueur", state.joueurs);
+
+      [
+        "coureur1", "coureur2", "coureur3",
+        "premier", "deuxieme", "troisieme",
+        "pronoJaune", "pronoVert", "pronoPois", "pronoBlanc",
+        "resultatJaune", "resultatVert", "resultatPois", "resultatBlanc"
+      ].forEach(id => fillSelect(id, state.coureurs));
+
+      renderClassement();
+      renderDetails();
+    }
+
+    function fillSelect(id, values) {
+      const select = document.getElementById(id);
+      const current = select.value;
+
+      select.innerHTML = `<option value="">-- Choisir --</option>` +
+        values.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join("");
+
+      if (values.includes(current)) select.value = current;
+    }
+
+    function saveProno() {
+      postData({
+        type: "saveProno",
+        etape: document.getElementById("pronoEtape").value,
+        joueur: document.getElementById("pronoJoueur").value,
+        coureur1: document.getElementById("coureur1").value,
+        coureur2: document.getElementById("coureur2").value,
+        coureur3: document.getElementById("coureur3").value
+      });
+    }
+
+    function saveResultat() {
+      postData({
+        type: "saveResultat",
+        etape: document.getElementById("resultatEtape").value,
+        premier: document.getElementById("premier").value,
+        deuxieme: document.getElementById("deuxieme").value,
+        troisieme: document.getElementById("troisieme").value
+      });
+    }
+
+    function saveMaillotProno() {
+      postData({
+        type: "saveMaillotProno",
+        joueur: document.getElementById("maillotJoueur").value,
+        jaune: document.getElementById("pronoJaune").value,
+        vert: document.getElementById("pronoVert").value,
+        pois: document.getElementById("pronoPois").value,
+        blanc: document.getElementById("pronoBlanc").value
+      });
+    }
+
+    function saveMaillotResultat() {
+      postData({
+        type: "saveMaillotResultat",
+        jaune: document.getElementById("resultatJaune").value,
+        vert: document.getElementById("resultatVert").value,
+        pois: document.getElementById("resultatPois").value,
+        blanc: document.getElementById("resultatBlanc").value
+      });
+    }
+
+    function calculateScores() {
+      const scores = {};
+
+      state.joueurs.forEach(j => {
+        scores[j] = {
+          joueur: j,
+          etapes: 0,
+          maillots: 0,
+          total: 0
+        };
+      });
+
+      state.pronos.forEach(prono => {
+        const resultat = state.resultats.find(r => String(r.Etape) === String(prono.Etape));
+        if (!resultat || !scores[prono.Joueur]) return;
+
+        const picks = [prono.Coureur1, prono.Coureur2, prono.Coureur3].filter(Boolean);
+        const podium = [resultat.Premier, resultat.Deuxieme, resultat.Troisieme].filter(Boolean);
+
+        picks.forEach(coureur => {
+          if (coureur === resultat.Premier) {
+            scores[prono.Joueur].etapes += 8;
+          } else if (podium.includes(coureur)) {
+            scores[prono.Joueur].etapes += 3;
+          }
+        });
+      });
+
+      const maillotResultat = state.maillots.find(m => m.Type === "Resultat");
+
+      if (maillotResultat) {
+        state.maillots
+          .filter(m => m.Type === "Prono")
+          .forEach(prono => {
+            if (!scores[prono.Joueur]) return;
+
+            ["Jaune", "Vert", "Pois", "Blanc"].forEach(type => {
+              if (prono[type] && prono[type] === maillotResultat[type]) {
+                scores[prono.Joueur].maillots += 3;
+              }
+            });
+          });
+      }
+
+      Object.values(scores).forEach(s => {
+        s.total = s.etapes + s.maillots;
+      });
+
+      return Object.values(scores).sort((a, b) => b.total - a.total);
+    }
+
+    function renderClassement() {
+      const classement = calculateScores();
+
+      const html = `
+        <table>
+          <thead>
+            <tr>
+              <th>Rang</th>
+              <th>Joueur</th>
+              <th>Étapes</th>
+              <th>Maillots</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${classement.map((s, i) => `
+              <tr>
+                <td class="rank">${i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1}</td>
+                <td><strong>${escapeHtml(s.joueur)}</strong></td>
+                <td>${s.etapes}</td>
+                <td>${s.maillots}</td>
+                <td><strong>${s.total}</strong></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+
+      document.getElementById("classement").innerHTML = html;
+    }
+
+    function renderDetails() {
+      const rows = state.pronos
+        .sort((a, b) => Number(a.Etape) - Number(b.Etape))
+        .map(p => {
+          const r = state.resultats.find(x => String(x.Etape) === String(p.Etape));
+          const pts = calculatePronoPoints(p, r);
+
+          return `
+            <tr>
+              <td>${p.Etape}</td>
+              <td>${escapeHtml(p.Joueur)}</td>
+              <td>${escapeHtml(p.Coureur1 || "")}</td>
+              <td>${escapeHtml(p.Coureur2 || "")}</td>
+              <td>${escapeHtml(p.Coureur3 || "")}</td>
+              <td>${r ? escapeHtml(r.Premier || "") : "-"}</td>
+              <td><strong>${pts}</strong></td>
+            </tr>
+          `;
+        }).join("");
+
+      document.getElementById("details").innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Étape</th>
+              <th>Joueur</th>
+              <th>Prono 1</th>
+              <th>Prono 2</th>
+              <th>Prono 3</th>
+              <th>Vainqueur</th>
+              <th>Pts</th>
+            </tr>
+          </thead>
+          <tbody>${rows || `<tr><td colspan="7">Aucun prono pour l'instant.</td></tr>`}</tbody>
+        </table>
+      `;
+    }
+
+    function calculatePronoPoints(prono, resultat) {
+      if (!resultat) return 0;
+
+      let points = 0;
+      const picks = [prono.Coureur1, prono.Coureur2, prono.Coureur3].filter(Boolean);
+      const podium = [resultat.Premier, resultat.Deuxieme, resultat.Troisieme].filter(Boolean);
+
+      picks.forEach(coureur => {
+        if (coureur === resultat.Premier) {
+          points += 8;
+        } else if (podium.includes(coureur)) {
+          points += 3;
+        }
+      });
+
+      return points;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
