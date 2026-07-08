@@ -294,6 +294,10 @@
         </section>
 
         <section class="card full">
+  <h2>👕 Pronos maillots finaux</h2>
+  <div id="detailsMaillots"></div>
+</section>
+        <section class="card full">
           <h2>🥇 Classement général</h2>
           <div id="classement"></div>
         </section>
@@ -382,6 +386,7 @@
       attachStageLockListener();
       updatePronoLockStatus();
       renderClassement();
+      renderDetailsMaillots();
       renderDetails();
     }
 
@@ -624,6 +629,36 @@
       document.getElementById("classement").innerHTML = html;
     }
 
+    function renderDetailsMaillots() {
+  const pronosMaillots = state.maillots.filter(m => m.Type === "Prono");
+
+  const rows = pronosMaillots.map(m => `
+    <tr>
+      <td><strong>${escapeHtml(m.Joueur || "")}</strong></td>
+      <td>${escapeHtml(m.Jaune || "")}</td>
+      <td>${escapeHtml(m.Vert || "")}</td>
+      <td>${escapeHtml(m.Pois || "")}</td>
+      <td>${escapeHtml(m.Blanc || "")}</td>
+    </tr>
+  `).join("");
+
+  document.getElementById("detailsMaillots").innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Joueur</th>
+          <th>Jaune</th>
+          <th>Vert</th>
+          <th>À pois</th>
+          <th>Blanc</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows || `<tr><td colspan="5">Aucun prono maillot enregistré pour l'instant.</td></tr>`}
+      </tbody>
+    </table>
+  `;
+}
     function renderDetails() {
       const rows = state.pronos
         .sort((a, b) => Number(a.Etape) - Number(b.Etape) || String(a.Joueur).localeCompare(String(b.Joueur)))
